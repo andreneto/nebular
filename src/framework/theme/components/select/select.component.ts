@@ -25,8 +25,8 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { merge } from 'rxjs';
-import { startWith, switchMap, takeWhile, filter } from 'rxjs/operators';
+import { merge, Subject } from 'rxjs';
+import { startWith, switchMap, takeWhile, filter, takeUntil } from 'rxjs/operators';
 
 import {
   NbAdjustableConnectedPositionStrategy,
@@ -617,6 +617,8 @@ export class NbSelectComponent<T> implements AfterViewInit, AfterContentInit, On
 
   protected alive: boolean = true;
 
+  protected destroyed$ = new Subject();
+
   protected keyManager: NbFocusKeyManager<NbOptionComponent<T>>;
 
   /**
@@ -698,16 +700,18 @@ export class NbSelectComponent<T> implements AfterViewInit, AfterContentInit, On
   }
 
   ngAfterContentInit() {
-    if (this.queue) {
-      // Call 'writeValue' when current change detection run is finished.
-      // When writing is finished, change detection starts again, since
-      // microtasks queue is empty.
-      // Prevents ExpressionChangedAfterItHasBeenCheckedError.
-      Promise.resolve().then(() => {
-        this.writeValue(this.queue);
-        this.queue = null;
-      });
-    }
+    this.options.changes.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+      if (this.queue) {
+        // Call 'writeValue' when current change detection run is finished.
+        // When writing is finished, change detection starts again, since
+        // microtasks queue is empty.
+        // Prevents ExpressionChangedAfterItHasBeenCheckedError.
+        Promise.resolve().then(() => {
+          this.writeValue(this.queue);
+          this.queue = null;
+        });
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -719,6 +723,8 @@ export class NbSelectComponent<T> implements AfterViewInit, AfterContentInit, On
 
   ngOnDestroy() {
     this.alive = false;
+
+    this.destroyed$.next();
 
     if (this.ref) {
       this.ref.dispose();

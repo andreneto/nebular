@@ -24,6 +24,7 @@ import { SelectSizesComponent } from './select-sizes.component';
 import { SelectStatusComponent } from './select-status.component';
 import { SelectInteractiveComponent } from './select-interactive.component';
 import { SelectTestComponent } from './select-test.component';
+import { SelectFetchComponent } from './select-fetch.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { SelectTestComponent } from './select-test.component';
     SelectStatusComponent,
     SelectInteractiveComponent,
     SelectTestComponent,
+    SelectFetchComponent
   ],
   imports: [
     FormsModule,

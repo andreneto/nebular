@@ -948,6 +948,12 @@ export const PLAYGROUND_COMPONENTS: ComponentLink[] = [
         component: 'SelectTestComponent',
         name: 'Select Test',
       },
+      {
+        path: 'select-fetch.component',
+        link: '/select/select-fetch.component',
+        component: 'SelectFetchComponent',
+        name: 'Select Fetch',
+      },
     ],
   },
   {

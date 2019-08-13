@@ -1,0 +1,9 @@
+<nb-card size="medium">
+    <nb-card-body class="example-items-col">
+        <form [formGroup]="form">
+            <nb-select formControlName="selectedOption" placeholder="Select an option">
+                <nb-option *ngFor="let option of options; let i = index" [value]="option.id">{{option.text}}</nb-option>
+            </nb-select>
+        </form>
+    </nb-card-body>
+</nb-card>

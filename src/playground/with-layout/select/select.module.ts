@@ -43,7 +43,7 @@ import { SelectFetchComponent } from './select-fetch.component';
     SelectStatusComponent,
     SelectInteractiveComponent,
     SelectTestComponent,
-    SelectFetchComponent
+    SelectFetchComponent,
   ],
   imports: [
     FormsModule,

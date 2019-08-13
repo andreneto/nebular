@@ -12,14 +12,14 @@ import { delay } from 'rxjs/operators';
 @Component({
     selector: 'nb-select-fetch',
     templateUrl: './select-fetch.component.html',
-    providers: [FormBuilder]
+    providers: [FormBuilder],
 })
 export class SelectFetchComponent {
 
-    options : {id: number, text: string}[];
+    options: {id: number, text: string}[];
 
     form = this.fb.group({
-        selectedOption : [1]
+        selectedOption : [1],
     });
 
     optionsSrc = [
@@ -28,10 +28,10 @@ export class SelectFetchComponent {
             { id: 2, text: 'Option 2' },
             { id: 3, text: 'Option 3' },
             { id: 4, text: 'Option 4' },
-        ]
+        ],
     ];
 
-    constructor(private fb: FormBuilder){
+    constructor(private fb: FormBuilder) {
         from(this.optionsSrc).pipe(delay(2000)).subscribe(options => {
             this.options = options;
         })

@@ -699,25 +699,28 @@ export class NbSelectComponent<T> implements AfterViewInit, AfterContentInit, On
     return this.selectionModel[0].content;
   }
 
+  handleChanges() {
+    if (this.queue) {
+      // Call 'writeValue' when current change detection run is finished.
+      // When writing is finished, change detection starts again, since
+      // microtasks queue is empty.
+      // Prevents ExpressionChangedAfterItHasBeenCheckedError.
+      Promise.resolve().then(() => {
+        this.writeValue(this.queue);
+        // this.queue = null;
+      });
+    }
+  }
+
   ngAfterContentInit() {
-    this.options.changes.pipe(takeUntil(this.destroyed$)).subscribe(() => {
-      if (this.queue) {
-        // Call 'writeValue' when current change detection run is finished.
-        // When writing is finished, change detection starts again, since
-        // microtasks queue is empty.
-        // Prevents ExpressionChangedAfterItHasBeenCheckedError.
-        Promise.resolve().then(() => {
-          this.writeValue(this.queue);
-          this.queue = null;
-        });
-      }
-    });
+    this.handleChanges();
   }
 
   ngAfterViewInit() {
     this.triggerStrategy = this.createTriggerStrategy();
 
     this.subscribeOnTriggers();
+    this.subscribeOnOptionsChange();
     this.subscribeOnOptionClick();
   }
 
@@ -899,6 +902,10 @@ export class NbSelectComponent<T> implements AfterViewInit, AfterContentInit, On
         this.onTouched();
       }
     });
+  }
+
+  protected subscribeOnOptionsChange() {
+    this.options.changes.pipe(takeUntil(this.destroyed$)).subscribe(() => this.handleChanges());
   }
 
   protected subscribeOnPositionChange() {
